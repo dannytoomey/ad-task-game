@@ -1,0 +1,38 @@
+<html>
+    <title>AD Task Game - Play</title>
+    <head>
+        <style>
+            canvas {
+                padding: 0;
+                margin: auto;
+                display: block;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+
+            #background {visibility: hidden;}
+
+        </style>
+        
+
+    </head>
+    <body>
+        <div class="canvas_frame">
+            <canvas id="canvas"></canvas>
+
+        </div>
+
+        <img src="{{ url_for('static', filename='background.png')}}" id="background">
+
+        <script src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+        
+        <script type="text/javascript" src="{{ url_for('static', filename='game_bundle.js')}}"></script>
+
+        
+
+    </body>    
+
+</html>
