@@ -30137,18 +30137,18 @@ class Asteriods{
 		window.addEventListener('keydown',on_press)
 		function on_press(e){
 			//can_move = true
-			if (e.keyCode == 38){
+			if (e.keyCode == 38 || e.keyCode == 87){
 				up_arrow = true
 				//console.log('kep down')
 
 			}
-			if (e.keyCode == 40){
+			if (e.keyCode == 40 || e.keyCode == 83){
 				down_arrow = true
 			}
-			if (e.keyCode == 37){
+			if (e.keyCode == 37 || e.keyCode == 65){
 				left_arrow = true
 			}
-			if (e.keyCode == 39){
+			if (e.keyCode == 39 || e.keyCode == 68){
 				right_arrow = true
 			}
 
@@ -30156,19 +30156,19 @@ class Asteriods{
 
 		window.addEventListener('keyup',on_release)
 		function on_release(e){
-			if (e.keyCode == 38){
+			if (e.keyCode == 38 || e.keyCode == 87){
 				up_arrow = false
 				//console.log('key released')
 
 			}
-			if (e.keyCode == 40){
+			if (e.keyCode == 40 || e.keyCode == 83){
 				down_arrow = false
 			}
-			if (e.keyCode == 37){
+			if (e.keyCode == 37 || e.keyCode == 65){
 				left_arrow = false
 				//tilt_px = 0
 			}
-			if (e.keyCode == 39){
+			if (e.keyCode == 39 || e.keyCode == 68){
 				right_arrow = false
 				//tilt_px = 0
 			}
