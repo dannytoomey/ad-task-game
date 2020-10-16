@@ -1,3 +1,6 @@
+# note - this dependency is NOT stable with python 3.9.x as of 10/16/20
+# python 3.7.9 supports psycopg2-binary, which should get the job done
+
 import psycopg2 as psycopg2
 import os 
 

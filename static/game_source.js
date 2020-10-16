@@ -132,10 +132,12 @@ class Asteriods{
 		var max_tilt_acc = 0.1 * (Math.PI / 180)
 		var tilt_bcg = 0
 		var tilt_bcg_rad = 0
+		var max_tilt_bcg_speed = 1 * (Math.PI/180)
 
 		var forward_acc = 0
-		var max_forward_acc = 1
+		var max_forward_acc = 0.1
 		var forward_bcg = 0
+		var max_forward_speed = 2.5
 
 
 		
@@ -207,11 +209,18 @@ class Asteriods{
 
 				if (tilt_bcg < 0){
 					tilt_bcg += 0.001 * (Math.PI/180)
+					if (tilt_bcg > max_tilt_bcg_speed){
+						tilt_bcg = max_tilt_bcg_speed
+					}
+
 
 				}
 
 				if (tilt_bcg > 0){
 					tilt_bcg -= 0.001 * (Math.PI/180)
+					if (tilt_bcg < -max_tilt_bcg_speed){
+						tilt_bcg = -max_tilt_bcg_speed
+					}
 
 				}
 				
@@ -285,11 +294,17 @@ class Asteriods{
 
 			if (up_arrow){
 				forward_bcg += forward_acc
+				if (forward_bcg > max_forward_speed){
+					forward_bcg = max_forward_speed
+				}
 				
 
 			}  
 			if (down_arrow){
 				forward_bcg -= forward_acc
+				if (forward_bcg < -max_forward_speed){
+					forward_bcg = -max_forward_speed
+				}
 				
 
 			}
