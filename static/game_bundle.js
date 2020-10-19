@@ -30017,7 +30017,6 @@ class Asteriods{
 
 	get_ship(size){
 
-		//var line_array = []
 		var ship = NaN
 
 		var sharpness = 4
@@ -30028,39 +30027,73 @@ class Asteriods{
             stroke: 'white'
 
         })
-        //this.line_array.push(line_1)
-
+        
 		var line_2 = new fabric.Line([0,0,size,size*sharpness],{
             left: this.canvas_center_x + size/2,
             top: this.canvas_center_y - size/2,
             stroke: 'white'
 
         })
-        //this.line_array.push(line_2)
-
+        
         var line_3 = new fabric.Line([0,size,size,0],{
             left: this.canvas_center_x - size/2,
             top: this.canvas_center_y + size*2.5,
             stroke: 'white'
 
         })
-        //this.line_array.push(line_3)
-
+        
         var line_4 = new fabric.Line([0,0,size,size],{
             left: this.canvas_center_x + size/2,
             top: this.canvas_center_y + size*2.5,
             stroke: 'white'
 
         })
-        //this.line_array.push(line_4)
-
+        
         ship = new fabric.Group([line_1,line_2,line_3,line_4])
         ship.set({ top:ship.top - ship.height/2, left:ship.left - ship.width/2 })
         this.ship = ship
 
         this.canvas.add(this.ship)
 
+        var thrust_array = []
+        var thrust = NaN
+        var x_move = 1
+
+        var thrust_line_1 = new fabric.Line([0,size*1.5,size/1.5,0],{
+            left: this.canvas_center_x - x_move*4,
+            top: this.canvas_center_y + size*3,
+            stroke: 'white'
+
+        })
+        thrust_array.push(thrust_line_1)	
+
+        var thrust_line_2 = new fabric.Line([0,0,size/1.5,size*1.5],{
+            left: this.canvas_center_x + x_move,
+            top: this.canvas_center_y + size*3,
+            stroke: 'white'
+
+        })
+		thrust_array.push(thrust_line_2)	
         
+        var thrust_line_3 = new fabric.Line([0,0,0,size*2],{
+            left: this.canvas_center_x + x_move,
+            top: this.canvas_center_y + size*3,
+            stroke: 'white'
+
+        })
+        thrust_array.push(thrust_line_3)	
+
+        
+        var i;
+        for (i=0;i<thrust_array.length;i++){
+        	thrust_array[i].set({ stroke: 'backgroundColor' })
+        }
+
+        thrust = new fabric.Group(thrust_array)
+        thrust.set({ top:thrust.top - thrust.height/2, left:thrust.left - thrust.width/2 })
+        
+
+        this.canvas.add(thrust)
         
 
 	}
