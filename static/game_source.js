@@ -369,36 +369,42 @@ class Turrents{
 			if (laser.length > 0){
 				//console.log('fired')
 
+
+
 				var i;
 				for (i=0;i<laser.length;i++){
 
-					var y_from_ship = (laser[i].top - self.ship.top)
-					var x_from_ship = (laser[i].left - self.ship.left)
-					var initial_theta = Math.atan2(y_from_ship,x_from_ship)
-			
-					var theta = initial_theta + (tilt_bcg)
-					
-					var radius = Math.sqrt(Math.pow(x_from_ship,2) + Math.pow(y_from_ship,2))
+					var x_from_start = laser[i].left - self.canvas_center_x + 7.5/2
+					var y_from_start = laser[i].top - self.canvas_center_y + 7.5*3
+					var initial_theta = Math.atan2(y_from_start,x_from_start)
+
+					var theta = initial_theta + tilt_bcg
+
+
+					var radius = Math.sqrt(Math.pow(x_from_start,2) + Math.pow(y_from_start,2))
 					var new_radius = radius + 1
 
-					
-					var move_x = ((new_radius * Math.cos(theta)) - laser[i].left) + self.ship.left
-					var move_y = ((new_radius * Math.sin(theta)) - laser[i].top) + self.ship.top
+					var move_y = ((radius * Math.cos(theta)) + self.canvas_center_y+7.5*3) / 200
+					var move_x = ((radius * Math.sin(theta)) )//+ self.canvas_center_x+7.5/2) / 200
 
-					// console.log(move_x)
-				    // console.log(move_y)
-					
-					if (laser[i].top > 0 - laser[i].height){
-						laser[i].set({ top:laser[i].top+move_y, left:move_x })
+					//move_y = new_radius * Math.cos(radius)
 
-					} 
-					if (laser[i].top <= 0 - laser[i].height){
+
+					//console.log(Math.sin(theta))
+
+						
+					laser[i].set({ top:laser[i].top-move_y })
+
+					
+
+					if (laser[i].top < 0 - laser[i].height){
 						laser.splice(i,1)
 					}
 
-					console.log(laser[i].top)
 
 				}
+
+
 
 				
 				
