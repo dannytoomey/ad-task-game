@@ -1,5 +1,5 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-(function (Buffer){(function (){
+(function (Buffer){
 /* build: `node build.js modules=ALL exclude=gestures,accessors requirejs minifier=uglifyjs` */
 /*! Fabric.js Copyright 2008-2015, Printio (Juriy Zaytsev, Maxim Chernyak) */
 
@@ -29991,18 +29991,15 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
 })();
 
 
-}).call(this)}).call(this,require("buffer").Buffer)
+}).call(this,require("buffer").Buffer)
 },{"buffer":5,"jsdom":4,"jsdom/lib/jsdom/living/generated/utils":4,"jsdom/lib/jsdom/utils":4}],2:[function(require,module,exports){
 /*
-
 notes from meeting with tom 10/16/20
-
 change game to a single rotating turrent that tries to shoot ships as they appear
 divided task - watch fuel guage
 unit test task in piloting chunks to develop quicker
 - get selective/orienting component first, then add working memory, then add divided
 where does the turrent start?
-
 */
 
 const fabric = require("fabric").fabric;
@@ -30015,13 +30012,15 @@ class Turrents{
         this.fabric = fabric
         //this.participant_id = participant_id
         
-        this.canvas = new fabric.StaticCanvas('canvas',{
+        this.canvas = new fabric.Canvas('canvas',{
             backgroundColor: 'black',
-            //width: w/1.5, height: h/1.5,
-            width: w, height: h
+            width: w, 
+            height: h,
+            left:0,
+            top:0
         
         });
-        
+
         this.canvas_center_x = this.canvas.width/2
         this.canvas_center_y = this.canvas.height/2 
 
@@ -30064,6 +30063,8 @@ class Turrents{
         ship = new fabric.Group([line_1,line_2,line_3,line_4])
         ship.set({ top:ship.top - ship.height/2, 
         		   left:ship.left - ship.width/2 })
+        ship.set('selectable',false)
+        
         this.ship = ship
 
         this.canvas.add(this.ship)
@@ -30168,6 +30169,7 @@ class Turrents{
 		var spacebar = false
 		var make_line = true
 		var laser = []
+		var target = []
 		var num_lasers = 0
 
 		var tilt_acc = 0
@@ -30181,7 +30183,82 @@ class Turrents{
 		var forward_bcg = 0
 		var max_forward_speed = 2.5
 
+		window.addEventListener('mousedown',on_click)
+		function on_click(e){
+			if ( (self.rotate_left_text.left < e.clientX && e.clientX < self.rotate_left_text.left + self.rotate_left_text.width) && (self.rotate_left_text.top < e.clientY && e.clientY < self.rotate_left_text.top + self.rotate_left_text.height) ){
+				left_arrow = true
+			}
+			if ( (self.rotate_right_text.left < e.clientX && e.clientX < self.rotate_right_text.left + self.rotate_right_text.width) && (self.rotate_right_text.top < e.clientY && e.clientY < self.rotate_right_text.top + self.rotate_right_text.height) ){
+				right_arrow = true
+			}
+			if ( (self.fire_text.left < e.clientX && e.clientX < self.fire_text.left + self.fire_text.width) && (self.fire_text.top < e.clientY && e.clientY < self.fire_text.top + self.fire_text.height) ){
+				spacebar = true
+				num_lasers += 1
+			}
 
+		}
+
+		window.addEventListener('mouseup',on_click_release)
+		function on_click_release(e){
+			if ( (self.rotate_left_text.left < e.clientX && e.clientX < self.rotate_left_text.left + self.rotate_left_text.width) && (self.rotate_left_text.top < e.clientY && e.clientY < self.rotate_left_text.top + self.rotate_left_text.height) ){
+				left_arrow = false
+			}
+			if ( (self.rotate_right_text.left < e.clientX && e.clientX < self.rotate_right_text.left + self.rotate_right_text.width) && (self.rotate_right_text.top < e.clientY && e.clientY < self.rotate_right_text.top + self.rotate_right_text.height) ){
+				right_arrow = false
+			}
+			if ( (self.fire_text.left < e.clientX && e.clientX < self.fire_text.left + self.fire_text.width) && (self.fire_text.top < e.clientY && e.clientY < self.fire_text.top + self.fire_text.height) ){
+				spacebar = false
+				make_line = true
+			}			
+		}
+
+		
+		window.addEventListener('touchstart',on_touch)
+		function on_touch(event){
+			var touches = event.changedTouches;
+		    for(var i=0; i < event.changedTouches.length; i++) {
+		        var touchId = event.changedTouches[i].identifier;
+		        var x       = event.changedTouches[i].pageX;
+		        var y       = event.changedTouches[i].pageY;
+		    
+				if ( (self.rotate_left_text.left - 25 < x && x < self.rotate_left_text.left + self.rotate_left_text.width + 25) && (self.rotate_left_text.top - 25 < y && y < self.rotate_left_text.top + self.rotate_left_text.height + 25) ){
+					left_arrow = true
+				}
+				if ( (self.rotate_right_text.left - 25 < x && x < self.rotate_right_text.left + self.rotate_right_text.width + 25) && (self.rotate_right_text.top - 25 < y && y < self.rotate_right_text.top + self.rotate_right_text.height + 25) ){
+					right_arrow = true
+				}
+				if ( (self.fire_text.left - 25 < x && x < self.fire_text.left + self.fire_text.width + 25) && (self.fire_text.top - 25 < y && y < self.fire_text.top + self.fire_text.height + 25) ){
+					spacebar = true
+					num_lasers += 1
+				}
+
+			}
+
+		}
+
+		window.addEventListener('touchend',on_touch_release)
+		function on_touch_release(e){
+			var touches = event.changedTouches;
+		    for(var i=0; i < event.changedTouches.length; i++) {
+		        var touchId = event.changedTouches[i].identifier;
+		        var x       = event.changedTouches[i].pageX;
+		        var y       = event.changedTouches[i].pageY;
+		    
+				if ( (self.rotate_left_text.left - 25 < x && x < self.rotate_left_text.left + self.rotate_left_text.width + 25) && (self.rotate_left_text.top - 25 < y && y < self.rotate_left_text.top + self.rotate_left_text.height + 25) ){
+					left_arrow = false
+				}
+				if ( (self.rotate_right_text.left - 25 < x && x < self.rotate_right_text.left + self.rotate_right_text.width + 25) && (self.rotate_right_text.top - 25 < y && y < self.rotate_right_text.top + self.rotate_right_text.height + 25) ){
+					right_arrow = false
+				}
+				if ( (self.fire_text.left -25 < x && x < self.fire_text.left + self.fire_text.width + 25) && (self.fire_text.top - 25 < y && y < self.fire_text.top + self.fire_text.height + 25) ){
+					spacebar = false
+					make_line = true
+				}
+
+			}	
+
+		}
+		
 		
 		window.addEventListener('keydown',on_press)
 		function on_press(e){
@@ -30300,26 +30377,34 @@ class Turrents{
 				self.star_array[i].left +=  move_x
 				self.star_array[i].top +=  move_y
 
-				if (self.star_array[i].top + self.star_array[i].height < 0){
-					self.star_array[i].top = self.star_array[i].top + self.canvas.height + (self.star_array[i].height * 2)
-					var star_size = 15 * Math.random()
-					if (star_size < 5){
-						var star_size = 15 * Math.random()	
+				var replace_stars = false
+
+				if (replace_stars){
+					if (self.star_array[i].top + self.star_array[i].height < 0){
+						self.star_array[i].top = self.star_array[i].top + self.canvas.height + (self.star_array[i].height * 2)
+						var star_size = 15 * Math.random()
+						if (star_size < 5){
+							var star_size = 15 * Math.random()	
+						}
+						self.star_array[i].set({ left:this.canvas.width * Math.random(),
+												 fill:`rgb(${255*Math.random()},0,${255*Math.random()})`,
+												 size:star_size })
 					}
-					self.star_array[i].set({ left:this.canvas.width * Math.random(),
-											 fill:`rgb(${255*Math.random()},0,${255*Math.random()})`,
-											 size:star_size })
-				}
-				if (self.star_array[i].top - self.star_array[i].height > self.canvas.height){
-					self.star_array[i].top = self.star_array[i].top - self.canvas.height - (self.star_array[i].height * 2)
-					var star_size = 15 * Math.random()
-					if (star_size < 5){
-						var star_size = 15 * Math.random()	
+					if (self.star_array[i].top - self.star_array[i].height > self.canvas.height){
+						self.star_array[i].top = self.star_array[i].top - self.canvas.height - (self.star_array[i].height * 2)
+						var star_size = 15 * Math.random()
+						if (star_size < 5){
+							var star_size = 15 * Math.random()	
+						}
+						self.star_array[i].set({ left:this.canvas.width * Math.random(),
+												 fill:`rgb(${255*Math.random()},0,${255*Math.random()})`,
+												 size:star_size })
 					}
-					self.star_array[i].set({ left:this.canvas.width * Math.random(),
-											 fill:`rgb(${255*Math.random()},0,${255*Math.random()})`,
-											 size:star_size })
+
+
 				}
+
+				
 
 			}
 
@@ -30345,15 +30430,27 @@ class Turrents{
 			        self.canvas.add(laser[laser.length-1])
 
 			        /*
-
 					console.log(typeof laser)
-
 					while (laser.top > 0){ 
 						laser.set({ top:laser.top - 0.0001 }) 
 					
 					}
-
 					*/
+
+					var new_target = new fabric.Rect({
+						left: self.canvas_center_x,
+						top: 0,
+						fill: 'white',
+						width: 10,
+						height: 10,
+					
+					})
+
+					new_target.set({ left:new_target.left-new_target.width/2 })
+
+					target.push(new_target)
+
+					self.canvas.add(target[target.length-1])
 
 			        make_line = false
 
@@ -30364,36 +30461,45 @@ class Turrents{
 			if (laser.length > 0){
 				//console.log('fired')
 
+				
 
 
 				var i;
 				for (i=0;i<laser.length;i++){
 
-					var x_from_start = laser[i].left - self.canvas_center_x + 7.5/2
-					var y_from_start = laser[i].top - self.canvas_center_y + 7.5*3
-					var initial_theta = Math.atan2(y_from_start,x_from_start)
-
-					var theta = initial_theta + tilt_bcg
-
-
-					var radius = Math.sqrt(Math.pow(x_from_start,2) + Math.pow(y_from_start,2))
-					var new_radius = radius + 1
-
-					var move_y = ((radius * Math.cos(theta)) + self.canvas_center_y+7.5*3) / 200
-					var move_x = ((radius * Math.sin(theta)) )//+ self.canvas_center_x+7.5/2) / 200
-
-					//move_y = new_radius * Math.cos(radius)
-
-
-					//console.log(Math.sin(theta))
-
-						
-					laser[i].set({ top:laser[i].top-move_y })
+					var y_from_ship = (target[i].top - self.ship.top)
+					var x_from_ship = (target[i].left - self.ship.left)
+					var initial_theta = Math.atan2(y_from_ship,x_from_ship)
+			
+					var theta = initial_theta + (tilt_bcg)
+					
+					var radius = Math.sqrt(Math.pow(x_from_ship,2) + Math.pow(y_from_ship,2))
 
 					
+					
+					var move_x = ((radius * Math.cos(theta)) - target[i].left) + self.ship.left
+					var move_y = ((radius * Math.sin(theta)) - target[i].top) + self.ship.top
 
-					if (laser[i].top < 0 - laser[i].height){
-						laser.splice(i,1)
+					target[i].left +=  move_x
+					target[i].top +=  move_y
+
+					if (laser[i].top > target[i].top){
+						laser[i].top -= 1
+					}
+					if (laser[i].top < target[i].top){
+						laser[i].top += 1
+					}
+					if (laser[i].left > target[i].left){
+						laser[i].left -= 1
+					}
+					if (laser[i].left < target[i].left){
+						laser[i].left += 1
+					}
+										
+
+					if ((target[i].top-5<laser[i].top&&laser[i].top<target[i].top+5) && (target[i].left- 5<laser[i].left&&laser[i].left<target[i].left+5)){
+						self.canvas.remove(laser[i])
+						self.canvas.remove(target[i])
 					}
 
 
@@ -30414,11 +30520,70 @@ class Turrents{
 
 	}
 
+	
+	add_boxes_for_touch(){
+		
+		this.rotate_left_text = NaN
+		var rotate_left_text = new fabric.Text('Rotate\nLeft', {
+			fontSize: 20,
+			lineHeight:1,
+			stroke:'white',
+			textBackgroundColor: 'black'
+		});
+		rotate_left_text.set({ left:rotate_left_text.width,
+							   top:this.canvas.height - rotate_left_text.height*2 })
+
+		this.rotate_left_text = rotate_left_text
+		this.rotate_left_text.set('selectable',false)
+		this.canvas.add(this.rotate_left_text);
+		
+
+		this.rotate_right_text = NaN
+		var rotate_right_text = new fabric.Text('Rotate\nRight', {
+			textAlign:'right',
+			fontSize: 20,
+			lineHeight:1,
+			stroke:'white',
+			textBackgroundColor: 'black'
+		});
+
+		rotate_right_text.set({ left:this.canvas.width - rotate_right_text.width*2,
+							   top:this.canvas.height - rotate_right_text.height*2 })
+		rotate_right_text.set('selectable',false)
+
+		this.rotate_right_text = rotate_right_text
+		this.canvas.add(this.rotate_right_text);
+
+
+		this.fire_text = NaN
+		var fire_text = new fabric.Text('Fire', {
+			textAlign:'center',
+			fontSize: 20,
+			lineHeight:1,
+			stroke:'white',
+			textBackgroundColor: 'black'
+		});
+
+		fire_text.set({ left:this.canvas_center_x - fire_text.width/2,
+						top:this.canvas.height - fire_text.height*3 })
+		fire_text.set('selectable',false)
+
+		this.fire_text = fire_text
+		this.canvas.add(this.fire_text);
+		
+
+
+	}
+
+	
+
 	run(){
 
 		this.get_ship(7.5)
 
 		this.make_background()
+		
+		this.add_boxes_for_touch()
 
 		this.move_ship() 
 
@@ -30812,11 +30977,6 @@ class Asteriods{
 	}
 
 }
-
-
-
-
-
 },{"fabric":1}],3:[function(require,module,exports){
 'use strict'
 
@@ -30974,7 +31134,7 @@ function fromByteArray (uint8) {
 },{}],4:[function(require,module,exports){
 
 },{}],5:[function(require,module,exports){
-(function (Buffer){(function (){
+(function (Buffer){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -32753,7 +32913,7 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-}).call(this)}).call(this,require("buffer").Buffer)
+}).call(this,require("buffer").Buffer)
 },{"base64-js":3,"buffer":5,"ieee754":6}],6:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
