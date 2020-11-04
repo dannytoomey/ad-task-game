@@ -1,5 +1,5 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-(function (Buffer){
+(function (Buffer){(function (){
 /* build: `node build.js modules=ALL exclude=gestures,accessors requirejs minifier=uglifyjs` */
 /*! Fabric.js Copyright 2008-2015, Printio (Juriy Zaytsev, Maxim Chernyak) */
 
@@ -29991,7 +29991,7 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
 })();
 
 
-}).call(this,require("buffer").Buffer)
+}).call(this)}).call(this,require("buffer").Buffer)
 },{"buffer":5,"jsdom":4,"jsdom/lib/jsdom/living/generated/utils":4,"jsdom/lib/jsdom/utils":4}],2:[function(require,module,exports){
 /*
 notes from meeting with tom 10/16/20
@@ -30278,8 +30278,12 @@ class Turrents{
 
 		}
 		
-		
+		var start_time = performance.now()
+
 		var update = setInterval( function(){
+			var current_time = performance.now()
+			var elapsed_time = current_time-start_time
+			elapsed_time = Math.floor(10000*elapsed_time/10000) 
 
 			if (left_arrow){
 				tilt_acc += 0.00001 * (Math.PI/180)
@@ -30339,7 +30343,31 @@ class Turrents{
 			}
 
 
+			// DONT FORGET TO LOWER THIS
+			var flip_error = 100
+			// macbook air can't flip very fast but most machines 
+			// are quicker and a smaller interval will be
+			// more appropriate. this should be 10 at most for production
+			
 
+			var flip_at_1 = 500
+			if (flip_at_1-flip_error < elapsed_time && elapsed_time < flip_at_1+flip_error){
+				if (can_show_stim){
+					show_stim()	
+
+				}
+			
+			}
+
+			var flip_at_2 = 1500
+			if (flip_at_2-flip_error < elapsed_time && elapsed_time < flip_at_2+flip_error){
+				if (can_drop_stim){
+					drop_stim()	
+
+				}
+			
+			}
+			
 
 			self.canvas.renderAll()
 
@@ -30482,6 +30510,32 @@ class Turrents{
 
 			}	
 
+		}
+
+		var can_show_stim = true
+		var enemy_1 = NaN
+		function show_stim(){
+			console.log('fired')
+
+			var size = self.canvas.height/25
+			
+			enemy_1 = new fabric.Rect({
+				width: size,
+				height: size,
+				left: self.canvas_center_x - self.canvas.width/4,
+				top: self.canvas_center_y - self.canvas.height/4,
+				fill: 'white'
+
+			})
+			self.canvas.add(enemy_1)
+			can_show_stim = false
+
+		}
+
+		var can_drop_stim = true
+		function drop_stim(){
+			self.canvas.remove(enemy_1)
+			can_drop_stim = false
 		}
 
 	}
@@ -30727,7 +30781,7 @@ function fromByteArray (uint8) {
 },{}],4:[function(require,module,exports){
 
 },{}],5:[function(require,module,exports){
-(function (Buffer){
+(function (Buffer){(function (){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -32506,7 +32560,7 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-}).call(this,require("buffer").Buffer)
+}).call(this)}).call(this,require("buffer").Buffer)
 },{"base64-js":3,"buffer":5,"ieee754":6}],6:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
