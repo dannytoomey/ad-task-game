@@ -30506,6 +30506,8 @@ class Turrents{
 
 	        make_line = false
 
+
+
 		}
 
 		function move_lasers(){
@@ -30577,20 +30579,20 @@ class Turrents{
 			
 			var coin_toss = Math.floor(4*Math.random())
 			if (coin_toss == 0){
-				var left = self.canvas_center_x - self.canvas.width/6
-				var top = self.canvas_center_y - self.canvas.height/6
+				var left = self.canvas_center_x - self.canvas.height/6 - size/2
+				var top = self.canvas_center_y - self.canvas.height/6 - size/2
 			}
 			if (coin_toss == 1){
-				var left = self.canvas_center_x + self.canvas.width/6
-				var top = self.canvas_center_y - self.canvas.height/6
+				var left = self.canvas_center_x + self.canvas.height/6 - size/2
+				var top = self.canvas_center_y - self.canvas.height/6 - size/2
 			}
 			if (coin_toss == 2){
-				var left = self.canvas_center_x - self.canvas.width/6
-				var top = self.canvas_center_y + self.canvas.height/6
+				var left = self.canvas_center_x - self.canvas.height/6 - size/2
+				var top = self.canvas_center_y + self.canvas.height/6 - size/2
 			}
 			if (coin_toss == 3){
-				var left = self.canvas_center_x + self.canvas.width/6
-				var top = self.canvas_center_y + self.canvas.height/6
+				var left = self.canvas_center_x + self.canvas.height/6 - size/2
+				var top = self.canvas_center_y + self.canvas.height/6 - size/2
 			}
 
 			self.enemy_1 = new fabric.Rect({
