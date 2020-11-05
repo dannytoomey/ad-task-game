@@ -30277,9 +30277,14 @@ class Turrents{
 			}
 
 		}
-		
+
+		var start_time = performance.now()
 		
 		var update = setInterval( function(){
+
+			var current_time = performance.now()
+
+			console.log(current_time)
 
 			if (left_arrow){
 				tilt_acc += 0.00001 * (Math.PI/180)

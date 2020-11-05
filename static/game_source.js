@@ -282,9 +282,13 @@ class Turrents{
 			}
 
 		}
-		
+
+		var start_time = performance.now()
 		
 		var update = setInterval( function(){
+
+			var current_time = performance.now()
+			var elapsed_time = current_time - elapsed_time
 
 			if (left_arrow){
 				tilt_acc += 0.00001 * (Math.PI/180)
@@ -343,11 +347,14 @@ class Turrents{
 				
 			}
 
-
+			var flip_error = 5
+			var flip_at = 500
+			if (flip-flip_error < current_time && current_time < flip_at+flip_error){
+				
+			}
 
 
 			self.canvas.renderAll()
-
 
 		},1)
 
