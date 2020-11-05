@@ -30277,14 +30277,13 @@ class Turrents{
 			}
 
 		}
-
-		var start_time = performance.now()
 		
+		var start_time = performance.now()
+
 		var update = setInterval( function(){
-
 			var current_time = performance.now()
-
-			console.log(current_time)
+			var elapsed_time = current_time-start_time
+			elapsed_time = Math.floor(10000*elapsed_time/10000) 
 
 			if (left_arrow){
 				tilt_acc += 0.00001 * (Math.PI/180)
@@ -30344,7 +30343,37 @@ class Turrents{
 			}
 
 
+			// DONT FORGET TO LOWER THIS
+			var flip_error = 100
+			// macbook air can't flip very fast but most machines 
+			// are quicker and a smaller interval will be
+			// more appropriate. this should be 10 at most for production
+			
 
+			var flip_at_1 = 500
+			if (flip_at_1-flip_error < elapsed_time && elapsed_time < flip_at_1+flip_error){
+				if (can_show_stim){
+					show_stim()	
+
+				}
+			
+			}
+
+			if (show_stim==false && drop_stim==true){
+				// move the enemy ships with tilt_bcg
+				// check if ship is shot
+
+			}
+
+			var flip_at_2 = 1500
+			if (flip_at_2-flip_error < elapsed_time && elapsed_time < flip_at_2+flip_error){
+				if (can_drop_stim){
+					drop_stim()	
+
+				}
+			
+			}
+			
 
 			self.canvas.renderAll()
 
@@ -30363,8 +30392,6 @@ class Turrents{
 				
 				var radius = Math.sqrt(Math.pow(x_from_ship,2) + Math.pow(y_from_ship,2))
 
-				
-				
 				var move_x = ((radius * Math.cos(theta)) - self.star_array[i].left) + self.ship.left
 				var move_y = ((radius * Math.sin(theta)) - self.star_array[i].top) + self.ship.top
 
@@ -30489,6 +30516,32 @@ class Turrents{
 
 		}
 
+		var can_show_stim = true
+		var enemy_1 = NaN
+		function show_stim(){
+			console.log('fired')
+
+			var size = self.canvas.height/25
+			
+			enemy_1 = new fabric.Rect({
+				width: size,
+				height: size,
+				left: self.canvas_center_x - self.canvas.width/4,
+				top: self.canvas_center_y - self.canvas.height/4,
+				fill: 'white'
+
+			})
+			self.canvas.add(enemy_1)
+			can_show_stim = false
+
+		}
+
+		var can_drop_stim = true
+		function drop_stim(){
+			self.canvas.remove(enemy_1)
+			can_drop_stim = false
+		}
+
 	}
 
 	
@@ -30572,9 +30625,6 @@ class Turrents{
 
 game = new Turrents(fabric)
 game.run()
-
-
-
 },{"fabric":1}],3:[function(require,module,exports){
 'use strict'
 
