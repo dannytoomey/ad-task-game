@@ -282,6 +282,8 @@ class Turrents{
 			}
 
 		}
+
+		var shot_down = 0
 		
 		var start_time = performance.now()
 
@@ -289,6 +291,8 @@ class Turrents{
 			var current_time = performance.now()
 			var elapsed_time = current_time-start_time
 			elapsed_time = Math.floor(10000*elapsed_time/10000) 
+
+			
 
 			if (left_arrow){
 				tilt_acc += 0.00001 * (Math.PI/180)
@@ -349,13 +353,13 @@ class Turrents{
 
 
 			// DONT FORGET TO LOWER THIS
-			var flip_error = 100
+			var flip_error = 5
 			// macbook air can't flip very fast but most machines 
 			// are quicker and a smaller interval will be
 			// more appropriate. this should be 10 at most for production
 			
 
-			var flip_at_1 = 500
+			var flip_at_1 = 1000
 			if (flip_at_1-flip_error < elapsed_time && elapsed_time < flip_at_1+flip_error){
 				if (can_show_stim){
 					show_stim()	
@@ -363,23 +367,55 @@ class Turrents{
 				}
 			
 			}
+			if (flip_at_1+flip_error < elapsed_time && can_show_stim){
+				show_stim()
+			}
 
-			if (show_stim==false && drop_stim==true){
-				// move the enemy ships with tilt_bcg
-				// check if ship is shot
+			if (can_show_stim==false && can_drop_stim==true){
+				// console.log('fired')
+
+				var y_from_ship = (self.enemy_1.top - self.ship.top)
+				var x_from_ship = (self.enemy_1.left - self.ship.left)
+				var initial_theta = Math.atan2(y_from_ship,x_from_ship)
+		
+				var theta = initial_theta + (tilt_bcg)
+				
+				var radius = Math.sqrt(Math.pow(x_from_ship,2) + Math.pow(y_from_ship,2))
+
+				var move_x = ((radius * Math.cos(theta)) - self.enemy_1.left) + self.ship.left
+				var move_y = ((radius * Math.sin(theta)) - self.enemy_1.top) + self.ship.top
+
+				self.enemy_1.left +=  move_x
+				self.enemy_1.top +=  move_y
 
 			}
 
-			var flip_at_2 = 1500
+			var flip_at_2 = 5000
 			if (flip_at_2-flip_error < elapsed_time && elapsed_time < flip_at_2+flip_error){
 				if (can_drop_stim){
 					drop_stim()	
+					
+			
 
 				}
 			
 			}
+			if (flip_at_2+flip_error < elapsed_time && can_drop_stim){
+				drop_stim()
+				
 			
+			}
 
+			if (flip_at_2+flip_error < elapsed_time && can_drop_stim == false){
+				
+				can_show_stim = true
+				can_drop_stim = true
+
+				start_time = performance.now()
+
+			}
+
+			
 			self.canvas.renderAll()
 
 
@@ -475,6 +511,8 @@ class Turrents{
 
 	        make_line = false
 
+
+
 		}
 
 		function move_lasers(){
@@ -497,17 +535,19 @@ class Turrents{
 				target[i].left +=  move_x
 				target[i].top +=  move_y
 
+				var speed = 2
+
 				if (laser[i].top > target[i].top+target[i].height/2){
-					laser[i].top -= 1
+					laser[i].top -= speed
 				}
 				if (laser[i].top < target[i].top+target[i].height/2){
-					laser[i].top += 1
+					laser[i].top += speed
 				}
 				if (laser[i].left > target[i].left+target[i].width/2){
-					laser[i].left -= 1
+					laser[i].left -= speed
 				}
 				if (laser[i].left < target[i].left+target[i].width/2){
-					laser[i].left += 1
+					laser[i].left += speed
 				}
 				laser[i].angle += tilt_bcg*90
 									
@@ -517,6 +557,18 @@ class Turrents{
 					self.canvas.remove(target[i])
 				}
 
+				if ((self.enemy_1.top < laser[i].top&&laser[i].top<self.enemy_1.top+self.enemy_1.height) && (self.enemy_1.left<laser[i].left&&laser[i].left<self.enemy_1.left+self.enemy_1.width)){
+					self.canvas.remove(self.enemy_1)
+					self.canvas.remove(laser[i])
+					self.canvas.remove(target[i])
+
+					shot_down += 1
+
+					self.shot_text.set({ text: `Hits: ${shot_down}` })
+					
+
+				}
+
 			}	
 
 		}
@@ -524,26 +576,47 @@ class Turrents{
 		var can_show_stim = true
 		var enemy_1 = NaN
 		function show_stim(){
-			console.log('fired')
 
 			var size = self.canvas.height/25
+
+			self.enemy_1 = enemy_1
+
 			
-			enemy_1 = new fabric.Rect({
+			var coin_toss = Math.floor(4*Math.random())
+			if (coin_toss == 0){
+				var left = self.canvas_center_x - self.canvas.width/6
+				var top = self.canvas_center_y - self.canvas.height/6
+			}
+			if (coin_toss == 1){
+				var left = self.canvas_center_x + self.canvas.width/6
+				var top = self.canvas_center_y - self.canvas.height/6
+			}
+			if (coin_toss == 2){
+				var left = self.canvas_center_x - self.canvas.width/6
+				var top = self.canvas_center_y + self.canvas.height/6
+			}
+			if (coin_toss == 3){
+				var left = self.canvas_center_x + self.canvas.width/6
+				var top = self.canvas_center_y + self.canvas.height/6
+			}
+
+			self.enemy_1 = new fabric.Rect({
 				width: size,
 				height: size,
-				left: self.canvas_center_x - self.canvas.width/4,
-				top: self.canvas_center_y - self.canvas.height/4,
+				left: left,
+				top: top,
 				fill: 'white'
 
 			})
-			self.canvas.add(enemy_1)
+
+			self.canvas.add(self.enemy_1)
 			can_show_stim = false
 
 		}
 
 		var can_drop_stim = true
 		function drop_stim(){
-			self.canvas.remove(enemy_1)
+			self.canvas.remove(self.enemy_1)
 			can_drop_stim = false
 		}
 
@@ -601,6 +674,22 @@ class Turrents{
 
 		this.fire_text = fire_text
 		this.canvas.add(this.fire_text);
+
+		this.shot_text = NaN
+		var shot_text = new fabric.Text('Hits: 0', {
+			textAlign:'right',
+			fontSize: fontSize,
+			lineHeight:1,
+			stroke:'white',
+			textBackgroundColor: 'black'
+		});
+
+		shot_text.set({ left:shot_text.width,
+						top:shot_text.height	
+		});
+		shot_text.set('selectable',false)
+		this.shot_text = shot_text
+		this.canvas.add(this.shot_text);
 		
 
 
@@ -630,3 +719,4 @@ class Turrents{
 
 game = new Turrents(fabric)
 game.run()
+
