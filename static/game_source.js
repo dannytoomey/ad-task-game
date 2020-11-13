@@ -1,12 +1,3 @@
-/*
-notes from meeting with tom 10/16/20
-change game to a single rotating turrent that tries to shoot ships as they appear
-divided task - watch fuel guage
-unit test task in piloting chunks to develop quicker
-- get selective/orienting component first, then add working memory, then add divided
-where does the turrent start?
-*/
-
 const fabric = require("fabric").fabric;
 
 class Turrents{
@@ -15,7 +6,6 @@ class Turrents{
         var h = window.innerHeight
         
         this.fabric = fabric
-        //this.participant_id = participant_id
         
         this.canvas = new fabric.Canvas('canvas',{
             backgroundColor: 'black',
@@ -78,6 +68,7 @@ class Turrents{
 
 	}
 
+	
 	make_background(){
 
 		var num_stars = 100
@@ -144,6 +135,7 @@ class Turrents{
 		var make_line = true
 		var laser = []
 		var target = []
+		var hits = []
 		var num_lasers = 0
 
 		var tilt_acc = 0
@@ -159,30 +151,60 @@ class Turrents{
 
 		window.addEventListener('mousedown',on_click)
 		function on_click(e){
-			if ( (self.rotate_left_text.left < e.clientX && e.clientX < self.rotate_left_text.left + self.rotate_left_text.width) && (self.rotate_left_text.top < e.clientY && e.clientY < self.rotate_left_text.top + self.rotate_left_text.height) ){
+			if (	(self.rotate_left_text.left < e.clientX && 
+					e.clientX < self.rotate_left_text.left + self.rotate_left_text.width) && 
+					(self.rotate_left_text.top < e.clientY && 
+					e.clientY < self.rotate_left_text.top + self.rotate_left_text.height)){
+
 				left_arrow = true
+
 			}
-			if ( (self.rotate_right_text.left < e.clientX && e.clientX < self.rotate_right_text.left + self.rotate_right_text.width) && (self.rotate_right_text.top < e.clientY && e.clientY < self.rotate_right_text.top + self.rotate_right_text.height) ){
+			if (	(self.rotate_right_text.left < e.clientX && 
+					e.clientX < self.rotate_right_text.left + self.rotate_right_text.width) && 
+					(self.rotate_right_text.top < e.clientY && 
+					e.clientY < self.rotate_right_text.top + self.rotate_right_text.height)){
+
 				right_arrow = true
+
 			}
-			if ( (self.fire_text.left < e.clientX && e.clientX < self.fire_text.left + self.fire_text.width) && (self.fire_text.top < e.clientY && e.clientY < self.fire_text.top + self.fire_text.height) ){
+			if (	(self.fire_text.left < e.clientX && 
+					e.clientX < self.fire_text.left + self.fire_text.width) && 
+					(self.fire_text.top < e.clientY && 
+					e.clientY < self.fire_text.top + self.fire_text.height)){
+
 				spacebar = true
 				num_lasers += 1
+
 			}
 
 		}
 
 		window.addEventListener('mouseup',on_click_release)
 		function on_click_release(e){
-			if ( (self.rotate_left_text.left < e.clientX && e.clientX < self.rotate_left_text.left + self.rotate_left_text.width) && (self.rotate_left_text.top < e.clientY && e.clientY < self.rotate_left_text.top + self.rotate_left_text.height) ){
+			if (	(self.rotate_left_text.left < e.clientX && 
+					e.clientX < self.rotate_left_text.left + self.rotate_left_text.width) && 
+					(self.rotate_left_text.top < e.clientY && 
+					e.clientY < self.rotate_left_text.top + self.rotate_left_text.height)){
+
 				left_arrow = false
+
 			}
-			if ( (self.rotate_right_text.left < e.clientX && e.clientX < self.rotate_right_text.left + self.rotate_right_text.width) && (self.rotate_right_text.top < e.clientY && e.clientY < self.rotate_right_text.top + self.rotate_right_text.height) ){
+			if (	(self.rotate_right_text.left < e.clientX && 
+					e.clientX < self.rotate_right_text.left + self.rotate_right_text.width) && 
+					(self.rotate_right_text.top < e.clientY && 
+					e.clientY < self.rotate_right_text.top + self.rotate_right_text.height)){
+
 				right_arrow = false
+
 			}
-			if ( (self.fire_text.left < e.clientX && e.clientX < self.fire_text.left + self.fire_text.width) && (self.fire_text.top < e.clientY && e.clientY < self.fire_text.top + self.fire_text.height) ){
+			if ( 	(self.fire_text.left < e.clientX && 
+					e.clientX < self.fire_text.left + self.fire_text.width) && 
+					(self.fire_text.top < e.clientY && 
+					e.clientY < self.fire_text.top + self.fire_text.height)){
+
 				spacebar = false
 				make_line = true
+
 			}			
 		}
 
@@ -195,15 +217,30 @@ class Turrents{
 		        var x       = event.changedTouches[i].pageX;
 		        var y       = event.changedTouches[i].pageY;
 		    
-				if ( (self.rotate_left_text.left - 25 < x && x < self.rotate_left_text.left + self.rotate_left_text.width + 25) && (self.rotate_left_text.top - 25 < y && y < self.rotate_left_text.top + self.rotate_left_text.height + 25) ){
+				if ( 	(self.rotate_left_text.left - 25 < x && 
+						x < self.rotate_left_text.left + self.rotate_left_text.width + 25) && 
+						(self.rotate_left_text.top - 25 < y && 
+						y < self.rotate_left_text.top + self.rotate_left_text.height + 25)){
+
 					left_arrow = true
+
 				}
-				if ( (self.rotate_right_text.left - 25 < x && x < self.rotate_right_text.left + self.rotate_right_text.width + 25) && (self.rotate_right_text.top - 25 < y && y < self.rotate_right_text.top + self.rotate_right_text.height + 25) ){
+				if ( 	(self.rotate_right_text.left - 25 < x && 
+						x < self.rotate_right_text.left + self.rotate_right_text.width + 25) && 
+						(self.rotate_right_text.top - 25 < y && 
+						y < self.rotate_right_text.top + self.rotate_right_text.height + 25)){
+
 					right_arrow = true
+
 				}
-				if ( (self.fire_text.left - 25 < x && x < self.fire_text.left + self.fire_text.width + 25) && (self.fire_text.top - 25 < y && y < self.fire_text.top + self.fire_text.height + 25) ){
+				if ( 	(self.fire_text.left - 25 < x && 
+						x < self.fire_text.left + self.fire_text.width + 25) && 
+						(self.fire_text.top - 25 < y && 
+						y < self.fire_text.top + self.fire_text.height + 25)){
+
 					spacebar = true
 					num_lasers += 1
+
 				}
 
 			}
@@ -218,15 +255,30 @@ class Turrents{
 		        var x       = event.changedTouches[i].pageX;
 		        var y       = event.changedTouches[i].pageY;
 		    
-				if ( (self.rotate_left_text.left - 25 < x && x < self.rotate_left_text.left + self.rotate_left_text.width + 25) && (self.rotate_left_text.top - 25 < y && y < self.rotate_left_text.top + self.rotate_left_text.height + 25) ){
+				if ( 	(self.rotate_left_text.left - 25 < x && 
+						x < self.rotate_left_text.left + self.rotate_left_text.width + 25) && 
+						(self.rotate_left_text.top - 25 < y && 
+						y < self.rotate_left_text.top + self.rotate_left_text.height + 25)){
+
 					left_arrow = false
+
 				}
-				if ( (self.rotate_right_text.left - 25 < x && x < self.rotate_right_text.left + self.rotate_right_text.width + 25) && (self.rotate_right_text.top - 25 < y && y < self.rotate_right_text.top + self.rotate_right_text.height + 25) ){
+				if ( 	(self.rotate_right_text.left - 25 < x && 
+						x < self.rotate_right_text.left + self.rotate_right_text.width + 25) && 
+						(self.rotate_right_text.top - 25 < y && 
+						y < self.rotate_right_text.top + self.rotate_right_text.height + 25)){
+
 					right_arrow = false
+
 				}
-				if ( (self.fire_text.left -25 < x && x < self.fire_text.left + self.fire_text.width + 25) && (self.fire_text.top - 25 < y && y < self.fire_text.top + self.fire_text.height + 25) ){
+				if ( 	(self.fire_text.left -25 < x && 
+						x < self.fire_text.left + self.fire_text.width + 25) && 
+						(self.fire_text.top - 25 < y && 
+						y < self.fire_text.top + self.fire_text.height + 25)){
+
 					spacebar = false
 					make_line = true
+
 				}
 
 			}	
@@ -236,11 +288,8 @@ class Turrents{
 		
 		window.addEventListener('keydown',on_press)
 		function on_press(e){
-			//can_move = true
 			if (e.keyCode == 38 || e.keyCode == 87){
 				up_arrow = true
-				//console.log('kep down')
-
 			}
 			if (e.keyCode == 40 || e.keyCode == 83){
 				down_arrow = true
@@ -262,19 +311,15 @@ class Turrents{
 		function on_release(e){
 			if (e.keyCode == 38 || e.keyCode == 87){
 				up_arrow = false
-				//console.log('key released')
-
 			}
 			if (e.keyCode == 40 || e.keyCode == 83){
 				down_arrow = false
 			}
 			if (e.keyCode == 37 || e.keyCode == 65){
 				left_arrow = false
-				//tilt_px = 0
 			}
 			if (e.keyCode == 39 || e.keyCode == 68){
 				right_arrow = false
-				//tilt_px = 0
 			}
 			if (e.keyCode == 32){
 				spacebar = false
@@ -291,9 +336,7 @@ class Turrents{
 			var current_time = performance.now()
 			var elapsed_time = current_time-start_time
 			elapsed_time = Math.floor(10000*elapsed_time/10000) 
-
 			
-
 			if (left_arrow){
 				tilt_acc += 0.00001 * (Math.PI/180)
 
@@ -348,6 +391,8 @@ class Turrents{
 
 			if (laser.length > 0){
 				move_lasers()
+
+
 				
 			}
 
@@ -509,8 +554,11 @@ class Turrents{
 
 			self.canvas.add(target[target.length-1])
 
-	        make_line = false
+			var hit = false
 
+			hits.push(hit)
+
+	        make_line = false
 
 
 		}
@@ -524,11 +572,8 @@ class Turrents{
 				var initial_theta = Math.atan2(y_from_ship,x_from_ship)
 		
 				var theta = initial_theta + (tilt_bcg)
-				
 				var radius = Math.sqrt(Math.pow(x_from_ship,2) + Math.pow(y_from_ship,2))
 
-				
-				
 				var move_x = ((radius * Math.cos(theta)) - target[i].left) + self.ship.left
 				var move_y = ((radius * Math.sin(theta)) - target[i].top) + self.ship.top
 
@@ -537,12 +582,14 @@ class Turrents{
 
 				var speed = 2
 
-				if (laser[i].top > target[i].top+target[i].height/2){
+				if (laser[i].top > target[i].top + target[i].height/2){
 					laser[i].top -= speed
 				}
-				if (laser[i].top < target[i].top+target[i].height/2){
+				if (laser[i].top < target[i].top + target[i].height/2){
 					laser[i].top += speed
 				}
+
+				/*
 				if (laser[i].left > target[i].left+target[i].width/2){
 					laser[i].left -= speed
 				}
@@ -550,26 +597,76 @@ class Turrents{
 					laser[i].left += speed
 				}
 				laser[i].angle += tilt_bcg*90
+
+				*/
+
+				
 									
-				var close_enough = self.canvas.height/75
-				if ((target[i].top+target[i].height/2-close_enough<laser[i].top&&laser[i].top<target[i].top+target[i].height/2+close_enough) && (target[i].left+target[i].width/2-close_enough<laser[i].left&&laser[i].left<target[i].left+target[i].width/2+close_enough)){
+				if (target[i].top < laser[i].top && laser[i].top <= target[i].top+target[i].height){
+
+					console.log('fired 1')
+
 					self.canvas.remove(laser[i])
 					self.canvas.remove(target[i])
+
+					// why is this firing multiple times??
+					
 				}
 
-				if ((self.enemy_1.top < laser[i].top&&laser[i].top<self.enemy_1.top+self.enemy_1.height) && (self.enemy_1.left<laser[i].left&&laser[i].left<self.enemy_1.left+self.enemy_1.width)){
+				/*
+
+
+				
+				if (	(self.enemy_1.top < laser[i].top &&
+						laser[i].top <= self.enemy_1.top+self.enemy_1.height) && 
+						(self.enemy_1.left < laser[i].left &&
+						laser[i].left <= self.enemy_1.left+self.enemy_1.width)){
+
+					console.log('fired 2')
+
+					
+					if (hits[i]==false){
+						hits[i] = true
+					
+					}
 					self.canvas.remove(self.enemy_1)
 					self.canvas.remove(laser[i])
 					self.canvas.remove(target[i])
 
-					shot_down += 1
-
-					self.shot_text.set({ text: `Hits: ${shot_down}` })
-					
-
 				}
 
+				*/
+
+				
+
+
+
+
+				
+
 			}	
+
+
+			
+			if (hits[hits.length-1]){								
+
+				console.log(hits)
+
+					
+				shot_down += 1
+				self.shot_text.set({ text: `Hits: ${shot_down}` })
+
+				hits[hits.length-1] = false
+
+				console.log(hits)
+
+				
+
+			}
+
+			
+
+			
 
 		}
 
@@ -705,7 +802,7 @@ class Turrents{
 		window.addEventListener('scroll', noScroll);
 
 		this.get_ship(this.canvas.height/75)
-
+		
 		this.make_background()
 		
 		this.add_boxes_for_touch()
