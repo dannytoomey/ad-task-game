@@ -2,7 +2,7 @@ from flask import Flask, flash, render_template, request, jsonify, Response, red
 from flask_cache_buster import CacheBuster
 
 config = {
-     'extensions': ['.js', '.css', '.csv'],
+     'extensions': ['.js','.mjs','.css','.csv'],
      'hash_size': 10
 }
 cache_buster = CacheBuster(config=config)
@@ -20,9 +20,9 @@ def home():
 def game():
 	return render_template('game.html')
 
-@app.route('/test')
+@app.route('/three')
 def test():
-	return	render_template('test.html')
+	return	render_template('three.html')
 
 if __name__ == '__main__':
 	app.run()
