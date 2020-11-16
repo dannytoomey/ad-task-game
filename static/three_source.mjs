@@ -28,13 +28,13 @@ function cube(){
 
 }
 
-cube()
+// cube()
 
 import { GLTFLoader } from './three.js/examples/jsm/loaders/GLTFLoader.js';
 
 const loader = new GLTFLoader();
 
-loader.load( './static/pixel_art_rocket.glb', function ( gltf ) {
+loader.load( './static/animation_test.glb', function ( gltf ) {
 
 	scene.add( gltf.scene );
 
