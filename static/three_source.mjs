@@ -28,6 +28,7 @@ function cube(){
 
 }
 
+cube()
 
 import { GLTFLoader } from './three.js/examples/jsm/loaders/GLTFLoader.js';
 
