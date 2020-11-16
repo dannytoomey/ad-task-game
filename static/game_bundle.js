@@ -1,5 +1,5 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-(function (Buffer){
+(function (Buffer){(function (){
 /* build: `node build.js modules=ALL exclude=gestures,accessors requirejs minifier=uglifyjs` */
 /*! Fabric.js Copyright 2008-2015, Printio (Juriy Zaytsev, Maxim Chernyak) */
 
@@ -29991,7 +29991,7 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
 })();
 
 
-}).call(this,require("buffer").Buffer)
+}).call(this)}).call(this,require("buffer").Buffer)
 },{"buffer":5,"jsdom":4,"jsdom/lib/jsdom/living/generated/utils":4,"jsdom/lib/jsdom/utils":4}],2:[function(require,module,exports){
 const fabric = require("fabric").fabric;
 
@@ -30599,7 +30599,7 @@ class Turrents{
 									
 				if (target[i].top < laser[i].top && laser[i].top <= target[i].top+target[i].height){
 
-					console.log('fired 1')
+					// console.log('fired 1')
 
 					self.canvas.remove(laser[i])
 					self.canvas.remove(target[i])
@@ -30970,7 +30970,7 @@ function fromByteArray (uint8) {
 },{}],4:[function(require,module,exports){
 
 },{}],5:[function(require,module,exports){
-(function (Buffer){
+(function (Buffer){(function (){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -32749,7 +32749,7 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-}).call(this,require("buffer").Buffer)
+}).call(this)}).call(this,require("buffer").Buffer)
 },{"base64-js":3,"buffer":5,"ieee754":6}],6:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m

@@ -604,7 +604,7 @@ class Turrents{
 									
 				if (target[i].top < laser[i].top && laser[i].top <= target[i].top+target[i].height){
 
-					console.log('fired 1')
+					// console.log('fired 1')
 
 					self.canvas.remove(laser[i])
 					self.canvas.remove(target[i])
