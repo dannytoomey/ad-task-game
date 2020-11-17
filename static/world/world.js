@@ -7,7 +7,10 @@ import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/resizer.js';
 import { Loop } from './systems/loop.js';
 
+import { load_model } from './components/models/load_model.js'
+
 let camera;
+let controls;
 let renderer;
 let scene;
 let loop;
@@ -19,6 +22,7 @@ class World {
     scene = createScene();
     loop = new Loop(camera, scene, renderer);
     container.append(renderer.domElement);
+    
 
     const controls = createControls(camera, renderer.domElement);
     const { ambientLight, mainLight } = createLights();
@@ -31,6 +35,9 @@ class World {
   
   async init() {
     const { rocket } = await load_model();
+    controls = createControls(camera, renderer.domElement);
+    
+    controls.target.copy(rocket.position);
   	scene.add(rocket);
     
   }

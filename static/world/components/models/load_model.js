@@ -1,6 +1,6 @@
 import { GLTFLoader } from '/static/three.js/examples/jsm/loaders/GLTFLoader.js';
 
-import { setupModel } from './setupModel.js';
+import { setup_model } from './setup_model.js';
 
 async function load_model() {
   const loader = new GLTFLoader();
@@ -9,7 +9,10 @@ async function load_model() {
 
   console.log('rocket!', model_data);
 
-  const rocket = setupModel(model_data);
+  const rocket = setup_model(model_data);
+  rocket.position.set(0,0,0)
 
   return { rocket }
 }
+
+export { load_model }

@@ -3,3 +3,5 @@ function setup_model(data) {
 
   return model;
 }
+
+export { setup_model }
