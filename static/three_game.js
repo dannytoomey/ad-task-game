@@ -1,3 +1,26 @@
+import { World } from './world/world.js';
+
+async function main() {
+  // Get a reference to the container element
+  const container = document.querySelector('canvas');
+
+  // create a new world
+  const world = new World(container);
+
+  // complete async tasks
+  await world.init();
+
+  // start the animation loop
+  world.start();
+}
+
+main().catch((err) => {
+  console.error(err);
+});
+
+
+/*
+
 import * as THREE from './three.js/build/three.module.js';
 import { GLTFLoader } from './three.js/examples/jsm/loaders/GLTFLoader.js';
 
@@ -106,7 +129,7 @@ function onDocumentKeyDown(event) {
     }
 };
 
-*/
+
 
 window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
@@ -131,6 +154,6 @@ function render() {
 animate();
 
 
-
+*/
 
 
