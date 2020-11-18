@@ -16,42 +16,58 @@
             body {
                 background-color: black;
             }
-
-            #scene-container {
-              /* tell our scene container to take up the full page */
-              position: absolute;
-              width: 100%;
-              height: 100%;
-
-              /*
-                Set the container's background color to the same as the scene's
-                background to prevent flashing on load
-              */
-              background-color: skyblue;
+            
+            #rocket-img{
+                visibility: hidden
             }
 
+            /* Paste this css to your style sheet file or under head tag */
+            /* This only works with JavaScript, 
+            if it's not present, don't show loader */
+            .no-js #loader { display: none;  }
+            .js #loader { display: block; position: absolute; left: 100px; top: 0; }
+            .se-pre-con {
+                position: fixed;
+                left: 0px;
+                top: 0px;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+                background: url(https://smallenvelop.com/wp-content/uploads/2014/08/Preloader_11.gif) center no-repeat #fff;
+            }
+
+            
+            
+
         </style>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
+        <script>
+        //paste this code under the head tag or in a separate js file.
+            // Wait for window load
+            $(window).load(function() {
+                // Animate loader off screen
+                $(".se-pre-con").fadeOut("slow");;
+            });
+        </script>
         
 
     </head>
     <body>
 
+        <div class="se-pre-con"></div>
 
-
-        <div class="canvas_frame">
-            <canvas id="canvas"></canvas>
-
-        </div>
-
-        <div id="scene-container">
+        <!--div class="canvas_frame">
+            
+        </div-->
+        <canvas id="canvas"></canvas>
         
-        </div>
-
+        <img src= "{{ url_for('static', filename='rocket.png')}}" id="rocket-img">
         
         <script src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-
         
-        <script type="module" src="{{ url_for('static', filename='three_game.js')}}"></script>
+        <script async type="text/javascript" src="{{ url_for('static', filename='game_bundle.js')}}"></script>
 
         
 

@@ -30016,6 +30016,25 @@ class Turrents{
 
 	}
 
+	async get_ship_image(){
+		var rocket_img = document.getElementById('rocket-img')
+		this.ship = new fabric.Image(rocket_img,{
+			angle: 0,
+			opacity: 1.0,
+			
+		})
+		var scale = 0.1
+		this.ship.set({ scaleX: scale,
+						  scaleY: scale,
+			   			  left: this.canvas_center_x - this.ship.width*scale/1.75,
+						  top: this.canvas_center_y - this.ship.height*scale/1.5,
+						})
+		this.ship.set('selectable',false)
+		await this.canvas.add(this.ship)
+
+
+	}
+
 	get_ship(size){
 
 		var ship = NaN
@@ -30134,7 +30153,7 @@ class Turrents{
 		var num_lasers = 0
 
 		var tilt_acc = 0
-		var max_tilt_acc = 0.1 * (Math.PI / 180)
+		var max_tilt_acc = 0.01 * (Math.PI / 180) // 0.1 * (Math.PI / 180)
 		var tilt_bcg = 0
 		var tilt_bcg_rad = 0
 		var max_tilt_bcg_speed = 0.5 * (Math.PI/180) 	// 1
@@ -30333,7 +30352,7 @@ class Turrents{
 			elapsed_time = Math.floor(10000*elapsed_time/10000) 
 			
 			if (left_arrow){
-				tilt_acc += 0.00001 * (Math.PI/180)
+				tilt_acc += 0.001 * (Math.PI/180)	// 0.00001 * (Math.PI/180)
 
 				if (tilt_acc > max_tilt_acc){
 					tilt_acc = max_tilt_acc
@@ -30342,7 +30361,7 @@ class Turrents{
 			}
 
 			if (right_arrow){
-				tilt_acc -= 0.00001 * (Math.PI/180)
+				tilt_acc -= 0.001 * (Math.PI/180)
 				if (tilt_acc < -max_tilt_acc){
 					tilt_acc = -max_tilt_acc
 				}
@@ -30355,20 +30374,27 @@ class Turrents{
 				tilt_acc = 0
 
 				if (tilt_bcg < 0){
-					tilt_bcg += 0.001 * (Math.PI/180)
+					tilt_bcg += 0.01 * (Math.PI/180)
 					if (tilt_bcg > max_tilt_bcg_speed){
 						tilt_bcg = max_tilt_bcg_speed
 					}
+					//console.log('left')
 
 				}
 
 				if (tilt_bcg > 0){
-					tilt_bcg -= 0.001 * (Math.PI/180)
+					tilt_bcg -= 0.01 * (Math.PI/180)
 					if (tilt_bcg < -max_tilt_bcg_speed){
 						tilt_bcg = -max_tilt_bcg_speed
 					}
+					//console.log('right')
 
-				}				
+				}
+				if (-0.0001 < tilt_bcg && tilt_bcg < 0.0001){
+					tilt_bcg = 0
+				}
+
+							
 
 			}
 
@@ -30465,16 +30491,16 @@ class Turrents{
 			var i;
 			for (i=0;i<self.star_array.length;i++){
 
-				var y_from_ship = (self.star_array[i].top - self.ship.top)
-				var x_from_ship = (self.star_array[i].left - self.ship.left)
+				var y_from_ship = (self.star_array[i].top - self.canvas_center_y)
+				var x_from_ship = (self.star_array[i].left - self.canvas_center_x)
 				var initial_theta = Math.atan2(y_from_ship,x_from_ship)
 		
 				var theta = initial_theta + (tilt_bcg)
 				
 				var radius = Math.sqrt(Math.pow(x_from_ship,2) + Math.pow(y_from_ship,2))
 
-				var move_x = ((radius * Math.cos(theta)) - self.star_array[i].left) + self.ship.left
-				var move_y = ((radius * Math.sin(theta)) - self.star_array[i].top) + self.ship.top
+				var move_x = ((radius * Math.cos(theta)) - self.star_array[i].left) + self.canvas_center_x
+				var move_y = ((radius * Math.sin(theta)) - self.star_array[i].top) + self.canvas_center_y
 
 				self.star_array[i].left +=  move_x
 				self.star_array[i].top +=  move_y
@@ -30514,7 +30540,7 @@ class Turrents{
 
 			var new_laser = new fabric.Line([0,0,0,size],{
 	            left: self.canvas_center_x - size/2,
-	            top: self.canvas_center_y - size*3,
+	            top: self.canvas_center_y - size*3 - self.ship.height*0.1/2,
 	            stroke: 'white'
 
 	        })
@@ -30562,15 +30588,15 @@ class Turrents{
 			var i;
 			for (i=0;i<laser.length;i++){
 
-				var y_from_ship = (target[i].top - self.ship.top)
-				var x_from_ship = (target[i].left - self.ship.left)
+				var y_from_ship = (target[i].top - self.canvas_center_y)
+				var x_from_ship = (target[i].left - self.canvas_center_x)
 				var initial_theta = Math.atan2(y_from_ship,x_from_ship)
 		
 				var theta = initial_theta + (tilt_bcg)
 				var radius = Math.sqrt(Math.pow(x_from_ship,2) + Math.pow(y_from_ship,2))
 
-				var move_x = ((radius * Math.cos(theta)) - target[i].left) + self.ship.left
-				var move_y = ((radius * Math.sin(theta)) - target[i].top) + self.ship.top
+				var move_x = ((radius * Math.cos(theta)) - target[i].left) + self.canvas_center_x
+				var move_y = ((radius * Math.sin(theta)) - target[i].top) + self.canvas_center_y
 
 				target[i].left +=  move_x
 				target[i].top +=  move_y
@@ -30584,7 +30610,6 @@ class Turrents{
 					laser[i].top += speed
 				}
 
-				/*
 				if (laser[i].left > target[i].left+target[i].width/2){
 					laser[i].left -= speed
 				}
@@ -30593,8 +30618,7 @@ class Turrents{
 				}
 				laser[i].angle += tilt_bcg*90
 
-				*/
-
+				
 				
 									
 				if (target[i].top < laser[i].top && laser[i].top <= target[i].top+target[i].height){
@@ -30608,8 +30632,7 @@ class Turrents{
 					
 				}
 
-				/*
-
+				
 
 				
 				if (	(self.enemy_1.top < laser[i].top &&
@@ -30630,7 +30653,7 @@ class Turrents{
 
 				}
 
-				*/
+				
 
 				
 
@@ -30789,20 +30812,23 @@ class Turrents{
 
 	
 
-	run(){
+	async run(){
 
 		function noScroll() {
 		  window.scrollTo(0, 0);
 		}
 		window.addEventListener('scroll', noScroll);
 
-		this.get_ship(this.canvas.height/75)
-		
+		///this.get_ship(this.canvas.height/75)
+		await this.get_ship_image()
+
 		this.make_background()
 		
 		this.add_boxes_for_touch()
 
 		this.move_ship() 
+
+
 
 
 	}
