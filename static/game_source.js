@@ -1,11 +1,13 @@
 const fabric = require("fabric").fabric;
+const fs = require("graceful-fs")
 
 class Turrents{
-	constructor(fabric){
+	constructor(fabric,fs){
 		var w = window.innerWidth
         var h = window.innerHeight
         
         this.fabric = fabric
+        this.fs = fs
         
         this.canvas = new fabric.Canvas('canvas',{
             backgroundColor: 'black',
@@ -21,22 +23,165 @@ class Turrents{
 
 	}
 
-	async get_ship_image(){
-		var rocket_img = document.getElementById('rocket-img')
-		this.ship = new fabric.Image(rocket_img,{
-			angle: 0,
-			opacity: 1.0,
-			
-		})
-		var scale = 0.1
-		this.ship.set({ scaleX: scale,
-						  scaleY: scale,
-			   			  left: this.canvas_center_x - this.ship.width*scale/1.75,
-						  top: this.canvas_center_y - this.ship.height*scale/1.5,
-						})
-		this.ship.set('selectable',false)
-		await this.canvas.add(this.ship)
+	get_ship_animation(){
 
+			
+		
+		/*
+		for (i=1;i<=250;i++){
+			var img = document.createElement(`img-${i}`)
+			if (i<10){
+				img.src = `./render_test/000${i}.png`
+			}
+			if (10<=i && i<100){
+				img.src = `./render_test/00${i}.png`
+			}
+			if (100<=i){
+				img.src = `./render_test/0${i}.png`
+			}
+			src.appendChild(img)
+			
+		}
+
+		var rocket_images = []
+		for(i=0;i<=250;i++){
+			var img = document.getElementById(`img-${i}`)
+			var ship = new fabric.Image(img,{
+				angle: 0,
+				opacity: 1.0
+			})
+			
+			var scale = 0.1
+			ship.set({ scaleX: scale,
+			  		   scaleY: scale,
+   			  		   left: this.canvas_center_x - ship.width*scale/1.75,
+			  		   top: this.canvas_center_y - ship.height*scale/1.5,
+			})
+			ship.set('selectable',false)
+			rocket_images.push(ship)
+
+		}
+		
+		
+		var i;
+		var canvas = document.getElementById('canvas')
+
+		for (i=1;i<=250;i++){
+			var img = document.createElement('img')
+			if (i<10){
+				var src = `/static/render_test/000${i}.png`
+			}
+			if (10<=i && i<100){
+				var src = `/static/render_test/00${i}.png`
+			}
+			if (100<=i){
+				var src = `/static/render_test/0${i}.png`
+			}
+			img.src = src
+			img.style.visibility = 'visible'
+			var id = `img-${i}`
+			img.id = id
+			canvas.appendChild(img)
+		}
+
+		var rocket_images = []
+		for (i=1;i<=250;i++){
+			var id = `img-${i}`
+			var img_el = document.getElementById(id)
+			var ship = new fabric.Image(img_el,{
+				angle: 0,
+				opacity: 1.0
+			})
+			var scale = 0.05
+			ship.set({ scaleX: scale,
+				       scaleY: scale,
+				  	   left: this.canvas_center_x - ship.width*scale/1.75,
+			  		   top: this.canvas_center_y - ship.height*scale/1.5,
+			})
+			ship.set('selectable',false)
+			rocket_images.push(ship)
+
+		}
+
+
+		
+		var ship = NaN
+		var ship_images = NaN
+		this.ship = ship
+		this.ship_images = rocket_images
+		this.ship = this.ship_images[100]
+		this.canvas.add(this.ship)
+
+		*/
+
+
+
+
+
+	}
+
+	get_ship_images(){
+		
+		window.addEventListener('load', (event) => {
+
+			var scale = 0.025
+		    
+		    var rocket1_img = document.getElementById('rocket1-img')
+		    this.ship1 = new fabric.Image(rocket1_img,{
+				angle: 0,
+				opacity: 1
+			})
+
+			this.ship1.set({ scaleX: scale,
+							  scaleY: scale,
+				   			  left: this.canvas_center_x - this.ship1.width*scale/1.75,
+							  top: this.canvas_center_y - this.ship1.height*scale/1.5,
+							})
+			this.ship1.set('selectable',false)
+
+			var rocket2_img = document.getElementById('rocket2-img')
+			this.ship2 = new fabric.Image(rocket2_img,{
+				angle: 0,
+				opacity: 1
+			})
+			this.ship2.set({ scaleX: scale,
+							  scaleY: scale,
+				   			  left: this.canvas_center_x/2 - this.ship2.width*scale/1.75,
+							  top: this.canvas_center_y/2 - this.ship2.height*scale/1.5,
+							})
+			this.ship2.set('selectable',false)
+
+			var rocket3_img = document.getElementById('rocket3-img')
+			this.ship3 = new fabric.Image(rocket3_img,{
+				angle: 0,
+				opacity: 1
+			})
+			this.ship3.set({ scaleX: scale,
+							  scaleY: scale,
+				   			  left: this.canvas_center_x*1.5 - this.ship3.width*scale/1.75,
+							  top: this.canvas_center_y/2 - this.ship3.height*scale/1.5,
+							})
+			this.ship3.set('selectable',false)
+
+			var rocket4_img = document.getElementById('rocket4-img')
+			this.ship4 = new fabric.Image(rocket4_img,{
+				angle: 0,
+				opacity: 1
+			})
+			this.ship4.set({ scaleX: scale,
+							  scaleY: scale,
+				   			  left: this.canvas_center_x*1.5 - this.ship4.width*scale/1.75,
+							  top: this.canvas_center_y*1.5 - this.ship4.height*scale/1.5,
+							})
+			this.ship4.set('selectable',false)
+
+			this.canvas.add(this.ship1)
+
+			
+			console.log('ships loaded')
+
+
+		});
 
 	}
 
@@ -443,18 +588,16 @@ class Turrents{
 			}
 
 			if (can_show_stim==false && can_drop_stim==true){
-				// console.log('fired')
-
-				var y_from_ship = (self.enemy_1.top - self.ship.top)
-				var x_from_ship = (self.enemy_1.left - self.ship.left)
+				var y_from_ship = (self.enemy_1.top - self.ship1.top)
+				var x_from_ship = (self.enemy_1.left - self.ship1.left)
 				var initial_theta = Math.atan2(y_from_ship,x_from_ship)
 		
 				var theta = initial_theta + (tilt_bcg)
 				
 				var radius = Math.sqrt(Math.pow(x_from_ship,2) + Math.pow(y_from_ship,2))
 
-				var move_x = ((radius * Math.cos(theta)) - self.enemy_1.left) + self.ship.left
-				var move_y = ((radius * Math.sin(theta)) - self.enemy_1.top) + self.ship.top
+				var move_x = ((radius * Math.cos(theta)) - self.enemy_1.left) + self.ship1.left
+				var move_y = ((radius * Math.sin(theta)) - self.enemy_1.top) + self.ship1.top
 
 				self.enemy_1.left +=  move_x
 				self.enemy_1.top +=  move_y
@@ -544,8 +687,8 @@ class Turrents{
 			var size = self.canvas.height/75
 
 			var new_laser = new fabric.Line([0,0,0,size],{
-	            left: self.canvas_center_x - size/2,
-	            top: self.canvas_center_y - size*3 - self.ship.height*0.1/2,
+	            left: self.canvas_center_x,
+	            top: self.canvas_center_y - size*5,
 	            stroke: 'white'
 
 	        })
@@ -615,10 +758,10 @@ class Turrents{
 					laser[i].top += speed
 				}
 
-				if (laser[i].left > target[i].left+target[i].width/2){
+				if (laser[i].left > target[i].left+target[i].width/2 - laser[i].width){
 					laser[i].left -= speed
 				}
-				if (laser[i].left < target[i].left+target[i].width/2){
+				if (laser[i].left < target[i].left+target[i].width/2 - laser[i].width){
 					laser[i].left += speed
 				}
 				laser[i].angle += tilt_bcg*90
@@ -638,12 +781,16 @@ class Turrents{
 				}
 
 				
+				var current_x_center = self.enemy_1.left + self.enemy_1.width/2
+				var current_y_center = self.enemy_1.top + self.enemy_1.height/2
 
-				
-				if (	(self.enemy_1.top < laser[i].top &&
-						laser[i].top <= self.enemy_1.top+self.enemy_1.height) && 
-						(self.enemy_1.left < laser[i].left &&
-						laser[i].left <= self.enemy_1.left+self.enemy_1.width)){
+				var new_box_x = current_x_center - self.enemy_1.width * 0.025
+				var new_box_y = current_y_center - self.enemy_1.height * 0.025
+
+				if (	(self.hit_box.top < laser[i].top &&
+						laser[i].top <= self.hit_box.top + self.hit_box.height) && 
+						(self.hit_box.left < laser[i].left &&
+						laser[i].left <= self.hit_box.left + self.hit_box.width)){
 
 					console.log('fired 2')
 
@@ -697,37 +844,49 @@ class Turrents{
 		var enemy_1 = NaN
 		function show_stim(){
 
-			var size = self.canvas.height/25
-
+			var size = 7
+			
 			self.enemy_1 = enemy_1
-
+			
+			var this_ship = self.ship4
 			
 			var coin_toss = Math.floor(4*Math.random())
 			if (coin_toss == 0){
-				var left = self.canvas_center_x - self.canvas.height/6 - size/2
-				var top = self.canvas_center_y - self.canvas.height/6 - size/2
+				var left = self.canvas_center_x - self.canvas.width/size - (this_ship.width*0.025)/2 // - size_x/2
+				var top = self.canvas_center_y - self.canvas.height/size - (this_ship.height*0.025)/2 // - size_y/2
 			}
 			if (coin_toss == 1){
-				var left = self.canvas_center_x + self.canvas.height/6 - size/2
-				var top = self.canvas_center_y - self.canvas.height/6 - size/2
+				var left = self.canvas_center_x + self.canvas.width/size - (this_ship.width*0.025)/2 // - size_x/2
+				var top = self.canvas_center_y - self.canvas.height/size - (this_ship.height*0.025)/2 // - size_y/2
 			}
 			if (coin_toss == 2){
-				var left = self.canvas_center_x - self.canvas.height/6 - size/2
-				var top = self.canvas_center_y + self.canvas.height/6 - size/2
+				var left = self.canvas_center_x - self.canvas.width/size - (this_ship.width*0.025)/2 // - size_x/2
+				var top = self.canvas_center_y + self.canvas.height/size - (this_ship.height*0.025)/2 // - size_y/2
 			}
 			if (coin_toss == 3){
-				var left = self.canvas_center_x + self.canvas.height/6 - size/2
-				var top = self.canvas_center_y + self.canvas.height/6 - size/2
+				var left = self.canvas_center_x + self.canvas.width/size - (this_ship.width*0.025)/2 // - size_x/2
+				var top = self.canvas_center_y + self.canvas.height/size - (this_ship.height*0.025)/2 // - size_y/2
 			}
 
-			self.enemy_1 = new fabric.Rect({
-				width: size,
-				height: size,
-				left: left,
-				top: top,
-				fill: 'white'
 
+			this_ship.set({ left:left, top:top })
+
+			var hit_box = new fabric.Rect({
+				left:left,
+				top:top,
+				width:this_ship.width * 0.025,
+				height:this_ship.height * 0.025,
+				stroke:'white',
+				opacity:0
 			})
+
+			self.hit_box = hit_box
+
+			var group = new fabric.Group([this_ship,self.hit_box])
+
+			self.enemy_1 = group
+
+			
 
 			self.canvas.add(self.enemy_1)
 			can_show_stim = false
@@ -817,15 +976,14 @@ class Turrents{
 
 	
 
-	async run(){
+	run(){
 
 		function noScroll() {
 		  window.scrollTo(0, 0);
 		}
 		window.addEventListener('scroll', noScroll);
 
-		///this.get_ship(this.canvas.height/75)
-		await this.get_ship_image()
+		this.get_ship_images()
 
 		this.make_background()
 		
@@ -840,6 +998,6 @@ class Turrents{
 	
 }
 
-game = new Turrents(fabric)
+game = new Turrents(fabric,fs)
 game.run()
 
