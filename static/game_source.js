@@ -124,8 +124,13 @@ class Turrents{
 		
 		window.addEventListener('load', (event) => {
 
-			var scale = 0.025
-		    
+			if (this.canvas.width > this.canvas.height){
+				var scale = this.canvas.width/33000
+			}
+			if (this.canvas.height > this.canvas.width){
+				var scale = this.canvas.height/33000
+			}
+
 		    var rocket1_img = document.getElementById('rocket1-img')
 		    this.ship1 = new fabric.Image(rocket1_img,{
 				angle: 0,
@@ -588,19 +593,19 @@ class Turrents{
 			}
 
 			if (can_show_stim==false && can_drop_stim==true){
-				var y_from_ship = (self.enemy_1.top - self.ship1.top)
-				var x_from_ship = (self.enemy_1.left - self.ship1.left)
+				var y_from_ship = (self.enemys[enemys.length-1].top - self.ship1.top)
+				var x_from_ship = (self.enemys[enemys.length-1].left - self.ship1.left)
 				var initial_theta = Math.atan2(y_from_ship,x_from_ship)
 		
 				var theta = initial_theta + (tilt_bcg)
 				
 				var radius = Math.sqrt(Math.pow(x_from_ship,2) + Math.pow(y_from_ship,2))
 
-				var move_x = ((radius * Math.cos(theta)) - self.enemy_1.left) + self.ship1.left
-				var move_y = ((radius * Math.sin(theta)) - self.enemy_1.top) + self.ship1.top
+				var move_x = ((radius * Math.cos(theta)) - self.enemys[enemys.length-1].left) + self.ship1.left
+				var move_y = ((radius * Math.sin(theta)) - self.enemys[enemys.length-1].top) + self.ship1.top
 
-				self.enemy_1.left +=  move_x
-				self.enemy_1.top +=  move_y
+				self.enemys[enemys.length-1].left +=  move_x
+				self.enemys[enemys.length-1].top +=  move_y
 
 			}
 
@@ -725,7 +730,7 @@ class Turrents{
 
 			var hit = false
 
-			hits.push(hit)
+			//hits.push(hit)
 
 	        make_line = false
 
@@ -769,7 +774,8 @@ class Turrents{
 				
 				
 									
-				if (target[i].top < laser[i].top && laser[i].top <= target[i].top+target[i].height){
+				if (target[i].top < laser[i].top && laser[i].top <= target[i].top+target[i].height &&
+					target[i].left < laser[i].left && laser[i].left <= target[i].left+target[i].width){
 
 					// console.log('fired 1')
 
@@ -781,27 +787,48 @@ class Turrents{
 				}
 
 				
-				var current_x_center = self.enemy_1.left + self.enemy_1.width/2
-				var current_y_center = self.enemy_1.top + self.enemy_1.height/2
+				// var current_x_center = self.enemy_1.left + self.enemy_1.width/2
+				// var current_y_center = self.enemy_1.top + self.enemy_1.height/2
 
-				var new_box_x = current_x_center - self.enemy_1.width * 0.025
-				var new_box_y = current_y_center - self.enemy_1.height * 0.025
+				// var new_box_x = current_x_center - self.enemy_1.width * 0.025
+				// var new_box_y = current_y_center - self.enemy_1.height * 0.025
 
-				if (	(self.hit_box.top < laser[i].top &&
-						laser[i].top <= self.hit_box.top + self.hit_box.height) && 
-						(self.hit_box.left < laser[i].left &&
-						laser[i].left <= self.hit_box.left + self.hit_box.width)){
+				// console.log(self.enemy_1.top)
+				// console.log(self.enemy_1.width)
 
-					console.log('fired 2')
-
+				if (hits[hits.length-1]==false){
 					
-					if (hits[i]==false){
-						hits[i] = true
+					if (	(self.enemys[enemys.length-1].top < laser[i].top &&
+							laser[i].top <= self.enemys[enemys.length-1].top + self.enemys[enemys.length-1].height) && 
+							(self.enemys[enemys.length-1].left < laser[i].left &&
+							laser[i].left <= self.enemys[enemys.length-1].left + self.enemys[enemys.length-1].width)){
+
+						
+						hits[hits.length-1] = true
+						
+						//self.canvas.remove(self.enemys[enemys.length-1])
+						self.enemys[enemys.length-1].set({ opacity:0 })
+						self.canvas.renderAll()
+						self.enemys[enemys.length-1] = NaN
+
+						can_drop_stim = false
+
+						self.canvas.remove(laser[i])
+						self.canvas.remove(target[i])
+
+						
+						
+						shot_down += 1
+						self.shot_text.set({ text: `Hits: ${shot_down}` })
+
+						
+						console.log(hits)
+
+						
 					
 					}
-					self.canvas.remove(self.enemy_1)
-					self.canvas.remove(laser[i])
-					self.canvas.remove(target[i])
+
+					
 
 				}
 
@@ -817,7 +844,8 @@ class Turrents{
 			}	
 
 
-			
+			/*
+
 			if (hits[hits.length-1]){								
 
 				console.log(hits)
@@ -834,6 +862,8 @@ class Turrents{
 
 			}
 
+			*/
+
 			
 
 			
@@ -841,12 +871,14 @@ class Turrents{
 		}
 
 		var can_show_stim = true
-		var enemy_1 = NaN
+		var enemys = []
+		self.enemys = enemys
+		
 		function show_stim(){
 
 			var size = 7
 			
-			self.enemy_1 = enemy_1
+			
 			
 			var this_ship = self.ship4
 			
@@ -884,19 +916,27 @@ class Turrents{
 
 			var group = new fabric.Group([this_ship,self.hit_box])
 
-			self.enemy_1 = group
+			self.enemys.push(group)
 
-			
+			self.canvas.add(self.enemys[enemys.length-1])
 
-			self.canvas.add(self.enemy_1)
+
 			can_show_stim = false
+
+			hits.push(false)
 
 		}
 
 		var can_drop_stim = true
 		function drop_stim(){
-			self.canvas.remove(self.enemy_1)
+			// self.canvas.remove(self.enemys[enemys.length-1])
+			
+			self.enemys[enemys.length-1].set({ opacity:0 })
+			self.canvas.renderAll()
+			self.enemys[enemys.length-1] = NaN
+			
 			can_drop_stim = false
+
 		}
 
 	}
