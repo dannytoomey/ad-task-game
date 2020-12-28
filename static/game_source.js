@@ -668,7 +668,27 @@ class Turrents{
 	            stroke: 'white'
 
 	        })
-			laser.push(new_laser)
+
+
+			var laser_img = new fabric.Image(document.getElementById('laser'),{
+				angle:90,
+				opacity:1
+			})
+			if (self.canvas.width > self.canvas.height){
+				var scale = self.canvas.width/33000
+			}
+			if (self.canvas.height > self.canvas.width){
+				var scale = self.canvas.height/33000
+			}
+			laser_img.set({   scaleX: scale,
+							  scaleY: scale,
+				   			  left: self.canvas_center_x + 10,
+							  top: self.canvas_center_y - 100,
+							})
+
+
+			laser.push(laser_img) //laser.push(new_laser)
+	        
 	        self.canvas.add(laser[laser.length-1])
 
 			var new_target = new fabric.Circle({
@@ -721,17 +741,20 @@ class Turrents{
 
 					var speed = 2
 
-					if (laser[i].top > target[i].top + target[i].height/2){
+					var adjust_target = 10
+					
+
+					if (laser[i].top > target[i].top + target[i].height/2 - adjust_target){
 						laser[i].top -= speed
 					}
-					if (laser[i].top < target[i].top + target[i].height/2){
+					if (laser[i].top < target[i].top + target[i].height/2 - adjust_target){
 						laser[i].top += speed
 					}
 
-					if (laser[i].left > target[i].left+target[i].width/2 - laser[i].width){
+					if (laser[i].left > target[i].left+target[i].width/2 + adjust_target) {	// - laser[i].width
 						laser[i].left -= speed
 					}
-					if (laser[i].left < target[i].left+target[i].width/2 - laser[i].width){
+					if (laser[i].left < target[i].left+target[i].width/2 + adjust_target){ // - laser[i].width
 						laser[i].left += speed
 					}
 					laser[i].angle += tilt_bcg*90
@@ -748,7 +771,7 @@ class Turrents{
 						var ship_height = enemy_ship.height * scale
 						var ship_width = enemy_ship.width * scale
 
-						var adjust_box = 20
+						var adjust_box = 25
 
 						if ((	(enemy_ship.top+adjust_box < laser[i].top && laser[i].top <= enemy_ship.top+ship_height-adjust_box) &&
 								(enemy_ship.left+adjust_box < laser[i].left && laser[i].left <= enemy_ship.left+ship_width-adjust_box)) &&
@@ -772,9 +795,10 @@ class Turrents{
 						}
 
 					}
+
 										
-					if (target[i].top < laser[i].top && laser[i].top <= target[i].top+target[i].height &&
-						target[i].left < laser[i].left && laser[i].left <= target[i].left+target[i].width){
+					if (target[i].top-adjust_target < laser[i].top && laser[i].top <= target[i].top-adjust_target+target[i].height &&
+						target[i].left+adjust_target < laser[i].left && laser[i].left <= target[i].left+adjust_target+target[i].width){
 						
 						self.canvas.remove(laser[i])
 						self.canvas.remove(target[i])
