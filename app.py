@@ -20,9 +20,9 @@ def home():
 def game():
 	return render_template('game.html')
 
-@app.route('/three')
+@app.route('/test')
 def test():
-	return	render_template('three.html')
+	return	render_template('test.html')
 
 if __name__ == '__main__':
 	app.run()

@@ -29,91 +29,26 @@ class Turrents{
 		if (this.canvas.height > this.canvas.width){
 			var scale = this.canvas.height/33000
 		}
+
+		if (0.03 < scale){
+			scale = 0.03
+		}
+		if (scale < 0.02){
+			scale = 0.02
+		}
 		
 	    var rocket1_img = document.getElementById('rocket1-img')
 	    this.ship1 = new fabric.Image(rocket1_img,{
 			angle: 0,
 			opacity: 1
 		})
-		this.ship1.set({  scaleX: scale,
-						  scaleY: scale,
-			   			  left: this.canvas_center_x - this.ship1.width*scale/1.75,
-						  top: this.canvas_center_y - this.ship1.height*scale/1.5,
+		this.ship1.set({  scaleX: scale*4,
+						  scaleY: scale*4,
+			   			  left: this.canvas_center_x - this.ship1.width*scale*2.1,
+						  top: this.canvas_center_y - this.ship1.height*scale*2.5,
 						})
 		this.ship1.set('selectable',false)
 		
-
-	    var animate = false
-
-        if (animate){
-
-        	var rocket1_img = document.getElementById('rocket1-animate')
-		    this.ship1 = new fabric.Image(rocket1_img,{
-				angle: 0,
-				opacity: 1
-			})
-		    this.ship1.set('src','static/render_test/0001.png')
-			this.ship1.set({  scaleX: scale,
-							  scaleY: scale,
-				   			  left: this.canvas_center_x - this.ship1.width*scale/1.75,
-							  top: this.canvas_center_y - this.ship1.height*scale/1.5,
-							})
-			this.ship1.set('selectable',false)
-        	
-        	if (document.getElementById("rocket1-animate")){
-
-
-
-
-        		/*
-        		var this_img = 1        		
-        		var num_imgs = 250
-
-        		var animate_img = document.getElementById("rocket1-animate")
-        		var self = this
-
-        		self.ship1.setElement(document.getElementById("rocket1-animate"))
-        		self.canvas.add(self.ship1)
-
-                window.setInterval(function(){
-                    if (this_img<10){
-                        animate_img.src = `static/render_test/000${this_img}.png`
-                        
-                    }
-                    if (10<=this_img && this_img<100){
-                        animate_img.src = `static/render_test/00${this_img}.png`
-                        
-                    }
-                    if (100<=this_img && this_img<1000){
-                        animate_img.src = `static/render_test/0${this_img}.png`
-                        
-                    }
-
-                    self.canvas.renderAll()
-
-
-                    if (this_img < num_imgs){
-                        this_img++
-                    }
-                    if (this_img == num_imgs){
-                        this_img = 1
-                    }
-
-                },10)
-
-        		console.log('animated ship successfully')
-        		*/
-
-        	}
-        	else{
-        		console.log('no id with name rocket1-animate')
-        	}
-        	
-        	
-			
-
-		}
-
 		var rocket2_img = document.getElementById('rocket2-img')
 		this.ship2 = new fabric.Image(rocket2_img,{
 			angle: 0,
@@ -418,7 +353,6 @@ class Turrents{
 		var set_el = false
 		var img_array = []
 		
-		var animation_start = performance.now()
 		var start_time = performance.now()
 
 		var update = setInterval( function(){
@@ -481,10 +415,6 @@ class Turrents{
 
 				
 
-				
-				
-				
-
 			}
 
 			// DONT FORGET TO LOWER THIS
@@ -533,79 +463,6 @@ class Turrents{
 				start_time = performance.now()
 
 			}
-
-			var animate = false
-
-			if (animate){
-
-				if (!set_el){
-					//self.ship1.setElement(document.getElementById("rocket1-animate"))
-	        		set_el = true
-	        		console.log('set to animate')
-
-				}
-
-				var elapsed_time_animation = current_time-animation_start
-				elapsed_time_animation = Math.floor(10000*elapsed_time_animation/10000) 
-
-				if (250 < elapsed_time_animation){
-					
-					/*
-	        		var new_img = document.createElement('img');
-	        		img_array.push(new_img)
-	                img_array[img_array.length-1].id = `new-img-${this_img}`
-	                document.getElementById("body").appendChild(img_array[img_array.length-1])
-	                new_img.onload=function(){
-	        			self.ship1.setElement(document.getElementById(`new-img-${this_img}`))
-
-	        		}
-	        		*/
-
-	        		var img = new Image();
-	        		img.onload=function(){
-	        			self.ship1.setElement(img)
-	        		}
-	        		
-	                
-                    if (this_img<10){
-                        img.src = `static/render_test/000${this_img}.png`
-
-                        
-                    }
-                    if (10<=this_img && this_img<100){
-                        img.src = `static/render_test/00${this_img}.png`
-                        
-                    }
-                    if (100<=this_img && this_img<1000){
-                        img.src = `static/render_test/0${this_img}.png`
-                        
-                    }
-
-                    
-                    console.log('new img')
-
-                    
-                    self.ship1.set({ left:self.canvas_center_x - self.ship1.width/75,
-                    				 top:self.canvas_center_y - self.ship1.height/90 })
-
-                    self.canvas.renderAll()
-
-
-                    if (this_img < num_imgs){
-                        this_img++
-                    }
-                    if (this_img == num_imgs){
-                        this_img = 1
-                    }
-
-                	animation_start = performance.now()
-
-
-				}
-
-
-			}
-			
 
 			
 			self.canvas.renderAll()
@@ -687,7 +544,7 @@ class Turrents{
 							})
 
 
-			laser.push(laser_img) //laser.push(new_laser)
+			laser.push(laser_img) 
 	        
 	        self.canvas.add(laser[laser.length-1])
 
@@ -762,23 +619,23 @@ class Turrents{
 					
 					if (typeof(enemy_ship) == 'object'){
 						if (self.canvas.width > self.canvas.height){
-							var scale = self.canvas.width/33000
+							var scale = (self.canvas.width/33000) * 4
 						}
 						if (self.canvas.height > self.canvas.width){
-							var scale = self.canvas.height/33000
+							var scale = (self.canvas.height/33000) * 4
 						}
 
 						var ship_height = enemy_ship.height * scale
 						var ship_width = enemy_ship.width * scale
 
-						var adjust_box = 25
+						var adjust_box = 50
 
 						if ((	(enemy_ship.top+adjust_box < laser[i].top && laser[i].top <= enemy_ship.top+ship_height-adjust_box) &&
-								(enemy_ship.left+adjust_box < laser[i].left && laser[i].left <= enemy_ship.left+ship_width-adjust_box)) &&
-							hits[hits.length-1] == false	){
+								(enemy_ship.left+(adjust_box*1.0) < laser[i].left && laser[i].left <= enemy_ship.left+ship_width-(adjust_box*1.5)) &&
+							hits[hits.length-1] == false	)){
 
 							hits[hits.length-1] = true
-							drop_stim()
+							explode_target()
 
 							shot_down += 1
 							self.shot_text.set({ text: `Hits: ${shot_down}` })
@@ -830,11 +687,46 @@ class Turrents{
 				angle: 0,
 				opacity: 1
 			})
-			ship3.set({   scaleX: scale,
-						  scaleY: scale,
-			   			  left: self.canvas_center_x*1.25 - ship3.width*scale/1.75,
-						  top: self.canvas_center_y/1.5 - ship3.height*scale/1.5,
+
+			if (0.03 < scale){
+				scale = 0.03
+			}
+			if (scale < 0.02){
+				scale = 0.02
+			}
+
+			var coin_toss = Math.floor(Math.random()*4)
+
+			if (coin_toss == 0){
+				ship3.set({   scaleX: scale*4,
+						  scaleY: scale*4,
+			   			  left: self.canvas_center_x - ship3.width*scale*5.0,
+						  top: self.canvas_center_y - ship3.height*scale*5.0,
 						})
+
+			}
+			if (coin_toss == 1){
+				ship3.set({   scaleX: scale*4,
+						  scaleY: scale*4,
+			   			  left: self.canvas_center_x - ship3.width*scale*3.5,
+						  top: self.canvas_center_y + ship3.height*scale*2.5,
+						})
+			}
+			if (coin_toss == 2){
+				ship3.set({   scaleX: scale*4,
+						  scaleY: scale*4,
+			   			  left: self.canvas_center_x + ship3.width*scale*0.75,
+						  top: self.canvas_center_y - ship3.height*scale*6.0,
+						})
+			}
+			if (coin_toss == 3){
+				ship3.set({   scaleX: scale*4,
+						  scaleY: scale*4,
+			   			  left: self.canvas_center_x + ship3.width*scale*0.25,
+						  top: self.canvas_center_y + ship3.height*scale*1.25,
+						})
+			}
+			
 
 			
 			enemy_ship = ship3
@@ -847,8 +739,15 @@ class Turrents{
 			
 		}
 
-		var new_center_x = self.canvas_center_x - 50
-		var new_center_y = self.canvas_center_y - 50
+		if (self.canvas.width > self.canvas.height){
+			var scale = self.canvas.width/33000
+		}
+		if (self.canvas.height > self.canvas.width){
+			var scale = self.canvas.height/33000
+		}
+
+		var new_center_x = self.canvas_center_x - 125//scale*10
+		var new_center_y = self.canvas_center_y - 100//scale*10
 		
 		function move_target(){
 
@@ -867,6 +766,54 @@ class Turrents{
 			enemy_ship.top =  new_y
 
 
+
+
+		}
+
+		function explode_target(){
+			
+			var i = 30
+			var num_imgs = 70
+			var animation = window.setInterval(animate,25)
+
+			var explode_ship = enemy_ship
+			self.canvas.add(explode_ship)
+			drop_stim()
+			
+			function animate(){
+				if (i<10){
+					explode_ship.setSrc(`static/Rocket3/Rckt3Explzn0${i}.png`)
+				}
+				if(10<=i){
+					explode_ship.setSrc(`static/Rocket3/Rckt3Explzn${i}.png`)
+				}
+
+				var y_from_ship = explode_ship.top - new_center_y 
+				var x_from_ship = explode_ship.left - new_center_x 
+				var initial_theta = Math.atan2(y_from_ship,x_from_ship)
+		
+				var theta = initial_theta + (tilt_bcg)
+				
+				var radius = Math.sqrt(Math.pow(x_from_ship,2) + Math.pow(y_from_ship,2))
+
+				var new_x = (radius * Math.cos(theta)) + new_center_x
+				var new_y = (radius * Math.sin(theta)) + new_center_y
+
+				explode_ship.left =  new_x
+				explode_ship.top =  new_y
+				
+				self.canvas.renderAll()
+
+				i += 1
+
+				if (num_imgs < i){
+					window.clearInterval(animation)
+					self.canvas.remove(explode_ship)
+				}
+				
+
+			}
+			
 		}
 		
 		var can_drop_stim = true
@@ -877,6 +824,8 @@ class Turrents{
 			can_drop_stim = false
 
 		}
+
+
 
 	}
 

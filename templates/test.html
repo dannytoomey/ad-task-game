@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>testing testing..</title>
+		<style>
+		canvas{
+		  border: 1px solid black;
+		}
+		</style>
+		
+	</head>
+	<body>
+
+		<canvas width="800" height="600"></canvas>
+		<script>
+
+		let canvas = document.querySelector('canvas');
+		let ctx = canvas.getContext('2d');
+
+		var grid_x = 15360 / 8
+		var grid_y = 10800 / 9
+
+		var img = new Image();
+		img.onload = function(){ ctx.drawImage(img, 0, 0, grid_x, grid_y, 0, 0, grid_x/5, grid_y/5) };
+
+		img.onerror=function(){ alert(img.src+' failed'); } 
+
+		img.src = "static/rocket-3-sprite.png"		
+		
+		
+
+		function init() {
+		  ctx.drawImage(img, 0, 0, 15360, 10800, 0, 0, 15360, 10800);
+		  
+		}
+	
+		</script>
+		
+	</body>
+</html>
